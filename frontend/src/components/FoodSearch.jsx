@@ -8,7 +8,7 @@ const FoodSearch = ({ log, setLog }) => {
   const handleSearch = async () => {
     try {
       const response = await axios.get(
-        `https://api.spoonacular.com/food/ingredients/search?query=${searchTerm}&number=5&apiKey=9be71985b80941debeb59b8dfd2d5e75`
+        `https://api.spoonacular.com/food/ingredients/search?query=${searchTerm}&number=5&apiKey=9289dfd4402a4a7fbc80063d0dabffba`
       );
       setResults(response.data.results);
     } catch (error) {
@@ -19,17 +19,17 @@ const FoodSearch = ({ log, setLog }) => {
   const addFoodToLog = async (food) => {
     try {
       const response = await axios.get(
-        `https://api.spoonacular.com/food/ingredients/${food.id}/information?amount=1&apiKey=9be71985b80941debeb59b8dfd2d5e75`
+        `https://api.spoonacular.com/food/ingredients/${food.id}/information?amount=1&apiKey=9289dfd4402a4a7fbc80063d0dabffba`
       );
       const data = response.data;
 
       const newFood = {
         name: data.name,
         servingSize: '1 serving',
-        calories: data.nutrition.nutrients.find(n => n.name === 'Calories').amount,
-        carbohydrates: data.nutrition.nutrients.find(n => n.name === 'Carbohydrates').amount,
-        protein: data.nutrition.nutrients.find(n => n.name === 'Protein').amount,
-        fat: data.nutrition.nutrients.find(n => n.name === 'Fat').amount,
+        calories: data.nutrition.nutrients.find(n => n.name === 'Calories')?.amount || 0,
+        carbohydrates: data.nutrition.nutrients.find(n => n.name === 'Carbohydrates')?.amount || 0,
+        protein: data.nutrition.nutrients.find(n => n.name === 'Protein')?.amount || 0,
+        fat: data.nutrition.nutrients.find(n => n.name === 'Fat')?.amount || 0,
       };
 
       // Update the log state
@@ -57,7 +57,7 @@ const FoodSearch = ({ log, setLog }) => {
       <ul className="search-results">
         {results.map((food) => (
           <li key={food.id} className="search-item">
-            {food.name}
+            <span>{food.name}</span>
             <button onClick={() => addFoodToLog(food)} className="add-button">Add</button>
           </li>
         ))}
