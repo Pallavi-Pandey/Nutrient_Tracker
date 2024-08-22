@@ -1,48 +1,64 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
-const FoodSearch = ({ onAddFood }) => {
-  const [query, setQuery] = useState('');
+const FoodSearch = ({ log, setLog }) => {
+  const [searchTerm, setSearchTerm] = useState('');
   const [results, setResults] = useState([]);
 
   const handleSearch = async () => {
     try {
       const response = await axios.get(
-        `https://api.spoonacular.com/food/ingredients/autocomplete?query=${query}&number=5&apiKey=9289dfd4402a4a7fbc80063d0dabffba`
+        `https://api.spoonacular.com/food/ingredients/search?query=${searchTerm}&number=5&apiKey=9289dfd4402a4a7fbc80063d0dabffba`
       );
-      setResults(response.data);
+      setResults(response.data.results);
     } catch (error) {
-      console.error('Error fetching food data', error);
+      console.error('Error fetching food items', error);
+    }
+  };
+
+  const addFoodToLog = async (food) => {
+    try {
+      const response = await axios.get(
+        `https://api.spoonacular.com/food/ingredients/${food.id}/information?amount=1&apiKey=9289dfd4402a4a7fbc80063d0dabffba`
+      );
+      const data = response.data;
+
+      const newFood = {
+        name: data.name,
+        servingSize: '1 serving',
+        calories: data.nutrition.nutrients.find(n => n.name === 'Calories').amount,
+        carbohydrates: data.nutrition.nutrients.find(n => n.name === 'Carbohydrates').amount,
+        protein: data.nutrition.nutrients.find(n => n.name === 'Protein').amount,
+        fat: data.nutrition.nutrients.find(n => n.name === 'Fat').amount,
+      };
+
+      // Update the log state
+      setLog([...log, newFood]);
+
+      // Optionally, reset the search input or provide feedback
+      setSearchTerm(''); // If you want to clear the search bar
+      setResults([]); // Clear the results after adding
+    } catch (error) {
+      console.error('Error fetching food nutrient data', error);
     }
   };
 
   return (
-    <div className="p-4 max-w-lg mx-auto">
-      <div className="flex items-center">
-        <input
-          type="text"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          className="p-2 w-full border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          placeholder="Search for food items..."
-        />
-        <button
-          onClick={handleSearch}
-          className="p-2 bg-blue-500 text-white rounded-r-md hover:bg-blue-600"
-        >
-          Search
-        </button>
-      </div>
-      <ul className="mt-4 space-y-2">
+    <div className="food-search">
+      <input
+        type="text"
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        placeholder="Search for food..."
+        className="search-input"
+      />
+      <button onClick={handleSearch} className="search-button">Search</button>
+      
+      <ul className="search-results">
         {results.map((food) => (
-          <li key={food.id} className="flex justify-between items-center p-2 bg-gray-100 rounded-md shadow-sm">
-            <span className="text-lg font-medium">{food.name}</span>
-            <button
-              onClick={() => onAddFood(food)}
-              className="ml-4 p-2 bg-green-500 text-white rounded hover:bg-green-600"
-            >
-              Add
-            </button>
+          <li key={food.id} className="search-item">
+            {food.name}
+            <button onClick={() => addFoodToLog(food)} className="add-button">Add</button>
           </li>
         ))}
       </ul>

@@ -21,13 +21,18 @@ const App = () => {
     setLog([...log, newFood]);
   };
 
+  const handleRemove = (indexToRemove) => {
+    const updatedLog = log.filter((_, index) => index !== indexToRemove);
+    setLog(updatedLog);
+  };
+
   return (
     <div className="App">
       <Header />
       <main>
-        <FoodSearch onAddFood={addFoodToLog} />
-        <FoodLog />
-        <NutrientBreakdown log={log} />
+      <FoodSearch onAddFood={addFoodToLog} log={log} setLog={setLog} />
+      <FoodLog log={log} handleRemove={handleRemove} />
+      <NutrientBreakdown log={log} />
       </main>
       <Footer />
     </div>
