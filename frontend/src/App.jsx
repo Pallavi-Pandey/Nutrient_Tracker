@@ -39,7 +39,7 @@ const App = () => {
       <Header />
       <main>
         <DailyGoals goals={goals} setGoals={setGoals} />
-        <FoodSearch onAddFood={addFoodToLog} />
+        <FoodSearch onAddFood={addFoodToLog} log={log} setLog={setLog} />
         <FoodLog log={log} handleRemove={handleRemove} />
         <NutrientBreakdown log={log} goals={goals} />
         <Recommendations log={log} goals={goals} />
