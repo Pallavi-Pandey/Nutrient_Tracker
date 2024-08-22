@@ -5,14 +5,18 @@ const FoodLog = ({ log, handleRemove }) => {
     <div className="food-log">
       <h2>Your Food Log</h2>
       {log.length > 0 ? (
-        <ul>
+        <ul className="food-log-list">
           {log.map((food, index) => (
             <li key={index} className="food-log-item">
               <div className="food-details">
                 <h3>{food.name}</h3>
-                <p>Serving Size: {food.servingSize}</p>
-                <p>Calories: {food.calories} kcal</p>
-                <p>Carbs: {food.carbohydrates}g | Protein: {food.protein}g | Fat: {food.fat}g</p>
+                <p><strong>Serving Size:</strong> {food.servingSize}</p>
+                <p><strong>Calories:</strong> {food.calories} kcal</p>
+                <p>
+                  <strong>Carbs:</strong> {food.carbohydrates}g | 
+                  <strong> Protein:</strong> {food.protein}g | 
+                  <strong> Fat:</strong> {food.fat}g
+                </p>
               </div>
               <button onClick={() => handleRemove(index)} className="remove-button">
                 Remove

@@ -6,6 +6,8 @@ const FoodSearch = ({ log, setLog }) => {
   const [results, setResults] = useState([]);
 
   const handleSearch = async () => {
+    if (!searchTerm) return; // Prevent search if searchTerm is empty
+
     try {
       const response = await axios.get(
         `https://api.spoonacular.com/food/ingredients/search?query=${searchTerm}&number=5&apiKey=9289dfd4402a4a7fbc80063d0dabffba`
@@ -35,9 +37,9 @@ const FoodSearch = ({ log, setLog }) => {
       // Update the log state
       setLog([...log, newFood]);
 
-      // Optionally, reset the search input or provide feedback
-      setSearchTerm(''); // If you want to clear the search bar
-      setResults([]); // Clear the results after adding
+      // Reset the search input and results
+      setSearchTerm('');
+      setResults([]);
     } catch (error) {
       console.error('Error fetching food nutrient data', error);
     }
@@ -45,23 +47,30 @@ const FoodSearch = ({ log, setLog }) => {
 
   return (
     <div className="food-search">
-      <input
-        type="text"
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-        placeholder="Search for food..."
-        className="search-input"
-      />
-      <button onClick={handleSearch} className="search-button">Search</button>
+      <div className="search-bar">
+        <input
+          type="text"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          placeholder="Search for food..."
+          className="search-input"
+        />
+        <button onClick={handleSearch} className="search-button">Search</button>
+      </div>
       
-      <ul className="search-results">
-        {results.map((food) => (
-          <li key={food.id} className="search-item">
-            <span>{food.name}</span>
-            <button onClick={() => addFoodToLog(food)} className="add-button">Add</button>
-          </li>
-        ))}
-      </ul>
+      {results.length > 0 && (
+        <ul className="search-results">
+          {results.map((food) => (
+            <li key={food.id} className="search-item">
+              <span className="food-name">{food.name}</span>
+              <button onClick={() => addFoodToLog(food)} className="add-button">Add</button>
+            </li>
+          ))}
+        </ul>
+      )}
+      {results.length === 0 && searchTerm && (
+        <p className="no-results">No results found.</p>
+      )}
     </div>
   );
 };
