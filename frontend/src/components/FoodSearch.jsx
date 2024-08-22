@@ -8,7 +8,7 @@ const FoodSearch = ({ log, setLog }) => {
   const handleSearch = async () => {
     try {
       const response = await axios.get(
-        `https://api.spoonacular.com/food/ingredients/search?query=${searchTerm}&number=5&apiKey=9289dfd4402a4a7fbc80063d0dabffba`
+        `https://api.spoonacular.com/food/ingredients/search?query=${searchTerm}&number=5&apiKey=9be71985b80941debeb59b8dfd2d5e75`
       );
       setResults(response.data.results);
     } catch (error) {
@@ -19,7 +19,7 @@ const FoodSearch = ({ log, setLog }) => {
   const addFoodToLog = async (food) => {
     try {
       const response = await axios.get(
-        `https://api.spoonacular.com/food/ingredients/${food.id}/information?amount=1&apiKey=9289dfd4402a4a7fbc80063d0dabffba`
+        `https://api.spoonacular.com/food/ingredients/${food.id}/information?amount=1&apiKey=9be71985b80941debeb59b8dfd2d5e75`
       );
       const data = response.data;
 
