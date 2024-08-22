@@ -1,14 +1,11 @@
-// src/index.js
-import { StrictMode } from 'react';
-import { createRoot } from 'react-dom/client';
-import App from './App.jsx';
-import { NutritionalProvider } from './context/NutritionalContext';
-import './index.css';
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import './styles/tailwind.css'; // Import the Tailwind CSS
+import App from './App';
 
-createRoot(document.getElementById('root')).render(
-  <StrictMode>
-    <NutritionalProvider>
-      <App />
-    </NutritionalProvider>
-  </StrictMode>
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
 );
