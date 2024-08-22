@@ -1,3 +1,4 @@
+// src/components/PersonalizedRecommendations.jsx
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
@@ -6,25 +7,18 @@ const PersonalizedRecommendations = ({ nutrients, goals }) => {
 
   useEffect(() => {
     const fetchRecommendations = async () => {
-      const deficiencies = {
-        carbs: goals.carbs - nutrients.carbs,
-        protein: goals.protein - nutrients.protein,
-        fat: goals.fat - nutrients.fat,
-      };
-
-      let query = '';
-      if (deficiencies.carbs > 0) query += 'carbs,';
-      if (deficiencies.protein > 0) query += 'protein,';
-      if (deficiencies.fat > 0) query += 'fat,';
-
-      if (query) {
-        const response = await axios.get(`https://api.spoonacular.com/food/ingredients/search`, {
+      try {
+        const response = await axios.get(`https://api.spoonacular.com/recipes/complexSearch`, {
           params: {
-            query,
+            // Example parameters, adjust based on actual API usage
+            minCalories: goals.calories - nutrients.calories,
+            maxCalories: goals.calories * 2, // Or another reasonable range
             apiKey: process.env.REACT_APP_SPOONACULAR_API_KEY,
           },
         });
         setRecommendations(response.data.results);
+      } catch (error) {
+        console.error('Error fetching recommendations:', error);
       }
     };
 
@@ -35,8 +29,12 @@ const PersonalizedRecommendations = ({ nutrients, goals }) => {
     <div>
       <h2>Personalized Recommendations</h2>
       <ul>
-        {recommendations.map((item) => (
-          <li key={item.id}>{item.name}</li>
+        {recommendations.map((recipe) => (
+          <li key={recipe.id}>
+            <a href={recipe.sourceUrl} target="_blank" rel="noopener noreferrer">
+              {recipe.title}
+            </a>
+          </li>
         ))}
       </ul>
     </div>

@@ -1,37 +1,45 @@
+// src/components/SearchBar.jsx
 import React, { useState } from 'react';
 import axios from 'axios';
 
 const SearchBar = ({ onAddFood }) => {
   const [query, setQuery] = useState('');
-  const [results, setResults] = useState([]);
+  const [searchResults, setSearchResults] = useState([]);
 
-  const searchFood = async (e) => {
-    e.preventDefault();
-    const response = await axios.get(`https://api.spoonacular.com/food/search`, {
-      params: {
-        query,
-        apiKey: process.env.REACT_APP_SPOONACULAR_API_KEY,
-      },
-    });
-    setResults(response.data.results);
+  const handleSearch = async () => {
+    try {
+      const response = await axios.get(`https://api.spoonacular.com/food/search`, {
+        params: {
+          query,
+          apiKey: process.env.REACT_APP_SPOONACULAR_API_KEY,
+        },
+      });
+      setSearchResults(response.data.results);
+    } catch (error) {
+      console.error('Error fetching search results:', error);
+    }
+  };
+
+  const handleAddFood = (food) => {
+    onAddFood(food);
+    setQuery('');
+    setSearchResults([]);
   };
 
   return (
     <div>
-      <form onSubmit={searchFood}>
-        <input
-          type="text"
-          placeholder="Search for food items..."
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-        />
-        <button type="submit">Search</button>
-      </form>
+      <input
+        type="text"
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+        placeholder="Search for food..."
+      />
+      <button onClick={handleSearch}>Search</button>
       <ul>
-        {results.map((item) => (
-          <li key={item.id}>
-            {item.title}
-            <button onClick={() => onAddFood(item)}>Add</button>
+        {searchResults.map((food) => (
+          <li key={food.id}>
+            {food.name}
+            <button onClick={() => handleAddFood(food)}>Add</button>
           </li>
         ))}
       </ul>
