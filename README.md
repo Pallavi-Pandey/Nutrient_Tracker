@@ -1,4 +1,4 @@
-# Nutrient_Tracker
+# Nutrient Tracker App
 
 - A web application that allows users to log their daily food intake.
 
